@@ -1,6 +1,4 @@
-
 import 'package:flutter/material.dart';
-
 
 class DogsSearchingPage extends StatelessWidget {
   const DogsSearchingPage({super.key});
@@ -19,7 +17,7 @@ class DogsSearchingPage extends StatelessWidget {
   }
 }
 
-class EnterBreed extends StatefulWidget{
+class EnterBreed extends StatefulWidget {
   const EnterBreed({super.key});
 
   @override
@@ -28,30 +26,31 @@ class EnterBreed extends StatefulWidget{
 
 class _EnterBreedState extends State<EnterBreed> {
   final TextEditingController _controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10,
-            vertical: 20),
-          child: TextField(
-            controller: _controller,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              hintText: 'Enter a dog breed to search',
-              suffixIcon: IconButton(
-                  onPressed: (){
-                    _controller.clear();
-                  },
-                  icon: const Icon(Icons.clear))
-            ),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+            child: TextField(
+                controller: _controller,
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  hintText: 'Enter a dog breed to search',
+                  suffixIcon: IconButton(
+                      onPressed: () {
+                        _controller.clear();
+                      },
+                      icon: const Icon(Icons.clear)),
+                  prefixIcon: IconButton(
+                      onPressed: () {
+                        _controller.selection;
+                      },
+                      icon: const Icon(Icons.search)),
+                )),
           ),
-        ),
-      ],
-    );
+        ]);
   }
 }
-
-

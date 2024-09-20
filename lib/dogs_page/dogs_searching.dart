@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 
-class DogsSearchingPage extends StatelessWidget{
+import 'package:flutter/material.dart';
+
+
+class DogsSearchingPage extends StatelessWidget {
   const DogsSearchingPage({super.key});
 
   @override
@@ -18,21 +18,34 @@ class DogsSearchingPage extends StatelessWidget{
     );
   }
 }
-class EnterBreed extends StatelessWidget{
+
+class EnterBreed extends StatefulWidget{
   const EnterBreed({super.key});
 
   @override
+  State<EnterBreed> createState() => _EnterBreedState();
+}
+
+class _EnterBreedState extends State<EnterBreed> {
+  final TextEditingController _controller = TextEditingController();
+  @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10,
+            padding: const EdgeInsets.symmetric(horizontal: 10,
             vertical: 20),
           child: TextField(
+            controller: _controller,
             decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Enter a dog breed to search'
+              border: const OutlineInputBorder(),
+              hintText: 'Enter a dog breed to search',
+              suffixIcon: IconButton(
+                  onPressed: (){
+                    _controller.clear();
+                  },
+                  icon: const Icon(Icons.clear))
             ),
           ),
         ),
@@ -40,3 +53,5 @@ class EnterBreed extends StatelessWidget{
     );
   }
 }
+
+

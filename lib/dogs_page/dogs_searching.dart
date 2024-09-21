@@ -35,10 +35,10 @@ class _EnterBreedState extends State<EnterBreed> {
   String? _imageUrl;
   bool _isLoading = false;
 
-  // Function to fetch the dog breed image from the API
+
   Future<void> fetchImage(String breed) async {
     setState(() {
-      _isLoading = true;  // Start showing the loading spinner
+      _isLoading = true;
     });
 
     final response = await http.get(
@@ -48,16 +48,16 @@ class _EnterBreedState extends State<EnterBreed> {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       setState(() {
-        _imageUrl = data['message'];  // The image URL is in the 'message' field
+        _imageUrl = data['message'];
       });
     } else {
       setState(() {
-        _imageUrl = null;  // No image found for this breed
+        _imageUrl = null;
       });
     }
 
     setState(() {
-      _isLoading = false;  // Hide the loading spinner
+      _isLoading = false;
     });
   }
 
@@ -75,13 +75,13 @@ class _EnterBreedState extends State<EnterBreed> {
               hintText: 'Enter a dog breed ',
               suffixIcon: IconButton(
                 onPressed: () {
-                  _controller.clear();  // Clear the text field
+                  _controller.clear();
                 },
                 icon: const Icon(Icons.clear),
               ),
               prefixIcon: IconButton(
                 onPressed: () {
-                  fetchImage(_controller.text.toLowerCase());  // Fetch image based on breed
+                  fetchImage(_controller.text.toLowerCase());
                 },
                 icon: const Icon(Icons.search),
               ),
@@ -89,14 +89,14 @@ class _EnterBreedState extends State<EnterBreed> {
           ),
           const SizedBox(height: 20),
           _isLoading
-              ? const Center(child: CircularProgressIndicator())  // Show loading spinner while fetching image
+              ? const Center(child: CircularProgressIndicator())
               : _imageUrl != null
               ? CachedNetworkImage(
             imageUrl: _imageUrl!,
             placeholder: (context, url) => const CircularProgressIndicator(),
             errorWidget: (context, url, error) => const Icon(Icons.error),
           )
-              : const Text('No image found'),  // Show this if no image is found
+              : const Text('No image found'),
         ],
       ),
     );

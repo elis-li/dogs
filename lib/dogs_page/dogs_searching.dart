@@ -3,6 +3,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import '../data_base/dataBase.dart';
+
+
 class DogsSearchingPage extends StatelessWidget {
   const DogsSearchingPage({super.key});
 
@@ -35,6 +38,21 @@ class _EnterBreedState extends State<EnterBreed> {
   String? _imageUrl;
   bool _isLoading = false;
 
+  void _saveQuery() async {
+    String queryText = _controller.text;
+
+    if (queryText.isNotEmpty) {
+      await DatabaseHelper.insertQuery(queryText);
+      _controller.clear();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Query saved!')),
+  );
+  }else{
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter a query')),
+      );
+  }
+}
 
   Future<void> fetchImage(String breed) async {
     setState(() {

@@ -50,3 +50,5 @@ class DatabaseHelper {
     return db.query('queries');
   }
 }
+
+

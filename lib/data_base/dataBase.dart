@@ -23,14 +23,30 @@ class QueryBase {
 }
 
 class DatabaseHelper {
-  static Future<Database> database() async {
+  static Future<Database> initializeDB() async {
     return openDatabase(
       join(await getDatabasesPath(), 'queries.db'),
       onCreate: (db, version) {
         return db.execute(
-
-        )
+          'CREATE TABLE queries(id INTEGER PRIMARY KEY AUTOINCREMENT, query TEXT',
+        );
+      },
+      version: 1,
+        );
       }
-    )
+
+
+  static Future<void> insertQuery(String query) async {
+    final db = await initializeDB();
+    await db.insert(
+      'queries',
+      {'query': query},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  static Future<List<Map<String, dynamic>>> getQueries() async{
+    final db = await initializeDB();
+    return db.query('queries');
   }
 }

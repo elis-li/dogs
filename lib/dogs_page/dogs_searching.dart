@@ -100,6 +100,7 @@ class _EnterBreedState extends State<EnterBreed> {
               prefixIcon: IconButton(
                 onPressed: () {
                   fetchImage(_controller.text.toLowerCase());
+                  _saveQuery();
                 },
                 icon: const Icon(Icons.search),
               ),

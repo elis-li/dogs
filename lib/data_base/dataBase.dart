@@ -28,7 +28,7 @@ class DatabaseHelper {
       join(await getDatabasesPath(), 'queries.db'),
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE queries(id INTEGER PRIMARY KEY AUTOINCREMENT, query TEXT',
+          'CREATE TABLE queries(id INTEGER PRIMARY KEY AUTOINCREMENT, query TEXT)',
         );
       },
       version: 1,

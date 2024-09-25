@@ -1,3 +1,4 @@
+import 'package:dogs/data_base/query_list.dart';
 import 'package:dogs/dogs_page/dogs_searching.dart';
 import 'package:flutter/material.dart';
 
@@ -18,6 +19,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.brown,
       ),
       home: const DogsSearchingPage(),
+      routes: {
+        '/query-list': (context) => QueryList(),
+      },
     );
   }
 }

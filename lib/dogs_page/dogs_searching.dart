@@ -1,3 +1,4 @@
+import 'package:dogs/data_base/query_list.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -43,20 +44,13 @@ class _EnterBreedState extends State<EnterBreed> {
 
     if (queryText.isNotEmpty) {
       await DatabaseHelper.insertQuery(queryText);
-      _controller.clear();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Query saved!')),
-  );
-  }else{
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter a query')),
-      );
   }
 }
 
   Future<void> fetchImage(String breed) async {
     setState(() {
       _isLoading = true;
+      _imageUrl = null;
     });
 
     final response = await http.get(
@@ -67,16 +61,16 @@ class _EnterBreedState extends State<EnterBreed> {
       final data = jsonDecode(response.body);
       setState(() {
         _imageUrl = data['message'];
+        _isLoading = false;
       });
     } else {
       setState(() {
         _imageUrl = null;
       });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Breed is not found! Plesase try again.')),
+      );
     }
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   @override
@@ -94,6 +88,10 @@ class _EnterBreedState extends State<EnterBreed> {
               suffixIcon: IconButton(
                 onPressed: () {
                   _controller.clear();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute (builder: (context) => QueryList()),
+                  );
                 },
                 icon: const Icon(Icons.clear),
               ),

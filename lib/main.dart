@@ -19,9 +19,6 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.brown,
       ),
       home: const DogsSearchingPage(),
-      routes: {
-        '/query-list': (context) => QueryList(),
-      },
     );
   }
 }

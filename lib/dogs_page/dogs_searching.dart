@@ -1,9 +1,8 @@
-import 'package:dogs/data_base/query_list.dart';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
-
 import '../data_base/dataBase.dart';
 
 
@@ -36,14 +35,42 @@ class EnterBreed extends StatefulWidget {
 
 class _EnterBreedState extends State<EnterBreed> {
   final TextEditingController _controller = TextEditingController();
+  FocusNode _focusNode = FocusNode();
+  List<QueryBase> _queries = [];
+  bool _showSuggestions = false;
   String? _imageUrl;
   bool _isLoading = false;
 
+  @override
+  void initState() {
+    super.initState();
+
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) {
+        _loadQueries();
+        setState(() {
+          _showSuggestions = true;
+        });
+      } else {
+        setState(() {
+          _showSuggestions = false;
+        });
+      }
+    });
+  }
+
+  void _loadQueries() async {
+    List<Map<String, dynamic>> queryMaps = await DatabaseHelper.getQueries();
+  setState(() {
+    _queries = queryMaps.map((map) => QueryBase.fromMap(map)).toList();
+  });
+  }
+
   void _saveQuery() async {
     String queryText = _controller.text;
-
     if (queryText.isNotEmpty) {
       await DatabaseHelper.insertQuery(queryText);
+      _loadQueries();
   }
 }
 
@@ -82,16 +109,13 @@ class _EnterBreedState extends State<EnterBreed> {
         children: <Widget>[
           TextField(
             controller: _controller,
+            focusNode: _focusNode,
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               hintText: 'Enter a dog breed ',
               suffixIcon: IconButton(
                 onPressed: () {
                   _controller.clear();
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute (builder: (context) => QueryList()),
-                  );
                 },
                 icon: const Icon(Icons.clear),
               ),
@@ -104,7 +128,51 @@ class _EnterBreedState extends State<EnterBreed> {
               ),
             ),
           ),
-          const SizedBox(height: 20),
+
+          if (_showSuggestions && _queries.isNotEmpty)
+            Container(
+                  margin: const EdgeInsets.only(top: 8.0),
+                  decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(5.0),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 4,
+                      offset: Offset(0, 2),
+                    )
+                  ],
+                  ),
+                  child: Column(
+                    children: [
+                      ElevatedButton(
+                          onPressed: (){
+                            _controller.clear();
+                          },
+                          child: const Text('clear all'),
+                      )
+                    ],
+                  ),
+
+              Flexible(
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: _queries.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                          title: Text(_queries[index].query),
+                          onTap: () {
+                            _controller.text = _queries[index].query;
+                            setState(() {
+                              _showSuggestions = false;
+                            });
+                          });
+                    }
+                ),
+              ),
+            ),
+
+           const SizedBox(height: 20),
           _isLoading
               ? const Center(child: CircularProgressIndicator())
               : _imageUrl != null
@@ -117,6 +185,12 @@ class _EnterBreedState extends State<EnterBreed> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
   }
 }
 

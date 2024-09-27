@@ -1,10 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../data_base/dataBase.dart';
-
 
 class DogsSearchingPage extends StatelessWidget {
   const DogsSearchingPage({super.key});
@@ -35,7 +33,7 @@ class EnterBreed extends StatefulWidget {
 
 class _EnterBreedState extends State<EnterBreed> {
   final TextEditingController _controller = TextEditingController();
-  FocusNode _focusNode = FocusNode();
+  final FocusNode _focusNode = FocusNode();
   List<QueryBase> _queries = [];
   bool _showSuggestions = false;
   String? _imageUrl;
@@ -61,9 +59,9 @@ class _EnterBreedState extends State<EnterBreed> {
 
   void _loadQueries() async {
     List<Map<String, dynamic>> queryMaps = await DatabaseHelper.getQueries();
-  setState(() {
-    _queries = queryMaps.map((map) => QueryBase.fromMap(map)).toList();
-  });
+    setState(() {
+      _queries = queryMaps.map((map) => QueryBase.fromMap(map)).toList();
+    });
   }
 
   void _saveQuery() async {
@@ -71,8 +69,8 @@ class _EnterBreedState extends State<EnterBreed> {
     if (queryText.isNotEmpty) {
       await DatabaseHelper.insertQuery(queryText);
       _loadQueries();
+    }
   }
-}
 
   Future<void> fetchImage(String breed) async {
     setState(() {
@@ -95,7 +93,7 @@ class _EnterBreedState extends State<EnterBreed> {
         _imageUrl = null;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Breed is not found! Plesase try again.')),
+        const SnackBar(content: Text('Breed is not found! Please try again.')),
       );
     }
   }
@@ -128,62 +126,51 @@ class _EnterBreedState extends State<EnterBreed> {
               ),
             ),
           ),
-
           if (_showSuggestions && _queries.isNotEmpty)
             Container(
-                  margin: const EdgeInsets.only(top: 8.0),
-                  decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(5.0),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 4,
-                      offset: Offset(0, 2),
-                    )
-                  ],
-                  ),
-                  child: Column(
-                    children: [
-                      ElevatedButton(
-                          onPressed: (){
-                            _controller.clear();
-                          },
-                          child: const Text('clear all'),
-                      )
-                    ],
-                  ),
-
-              Flexible(
-                child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: _queries.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                          title: Text(_queries[index].query),
-                          onTap: () {
-                            _controller.text = _queries[index].query;
-                            setState(() {
-                              _showSuggestions = false;
-                            });
-                          });
-                    }
-                ),
+              margin: const EdgeInsets.only(top: 8.0),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(5.0),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  )
+                ],
               ),
-            ),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: 5,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                            title: Text(_queries[index].query),
+                            onTap: () {
+                              _controller.text = _queries[index].query;
+                              setState(() {
+                                _showSuggestions = false;
+                              });
+                            },
+                        );
+                      },
+                    ),
+                 ),
 
-           const SizedBox(height: 20),
+          const SizedBox(height: 20),
           _isLoading
               ? const Center(child: CircularProgressIndicator())
               : _imageUrl != null
-              ? CachedNetworkImage(
-            imageUrl: _imageUrl!,
-            placeholder: (context, url) => const CircularProgressIndicator(),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
-          )
-              : const Text('No image found'),
-        ],
-      ),
+                  ? CachedNetworkImage(
+                      imageUrl: _imageUrl!,
+                      placeholder: (context, url) =>
+                          const CircularProgressIndicator(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                    )
+                  : const Text('No image found'),
+    ]
+      )
     );
   }
 
@@ -193,5 +180,3 @@ class _EnterBreedState extends State<EnterBreed> {
     super.dispose();
   }
 }
-
-

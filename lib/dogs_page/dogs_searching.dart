@@ -1,3 +1,4 @@
+import 'package:dogs/design/texts.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -11,7 +12,7 @@ class DogsSearchingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dog Breed Search'),
+        title: const Text(search),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.brown,
@@ -93,7 +94,7 @@ class _EnterBreedState extends State<EnterBreed> {
         _imageUrl = null;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Breed is not found! Please try again.')),
+        const SnackBar(content: Text(error1)),
       );
     }
   }
@@ -110,7 +111,7 @@ class _EnterBreedState extends State<EnterBreed> {
             focusNode: _focusNode,
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
-              hintText: 'Enter a dog breed ',
+              hintText: enter,
               suffixIcon: IconButton(
                 onPressed: () {
                   _controller.clear();
@@ -168,7 +169,7 @@ class _EnterBreedState extends State<EnterBreed> {
                       errorWidget: (context, url, error) =>
                           const Icon(Icons.error),
                     )
-                  : const Text('No image found'),
+                  : const Text(error2),
     ]
       )
     );

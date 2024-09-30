@@ -129,6 +129,7 @@ class _EnterBreedState extends State<EnterBreed> {
           ),
           if (_showSuggestions && _queries.isNotEmpty)
             Container(
+              height: 250,
               margin: const EdgeInsets.only(top: 8.0),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.5),
@@ -141,9 +142,10 @@ class _EnterBreedState extends State<EnterBreed> {
                   )
                 ],
               ),
-                    child: ListView.builder(
+                    child: SingleChildScrollView(
+                    child:  ListView.builder(
                       shrinkWrap: true,
-                      itemCount: 5,
+                      itemCount: _queries.length,
                       itemBuilder: (context, index) {
                         return ListTile(
                             title: Text(_queries[index].query),
@@ -157,6 +159,7 @@ class _EnterBreedState extends State<EnterBreed> {
                       },
                     ),
                  ),
+            ),
 
           const SizedBox(height: 20),
           _isLoading
@@ -170,7 +173,7 @@ class _EnterBreedState extends State<EnterBreed> {
                           const Icon(Icons.error),
                     )
                   : const Text(error2),
-    ]
+      ]
       )
     );
   }

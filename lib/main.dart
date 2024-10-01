@@ -1,4 +1,5 @@
 import 'package:dogs/data_base/query_list.dart';
+import 'package:dogs/design/texts.dart';
 import 'package:dogs/dogs_page/dogs_searching.dart';
 import 'package:flutter/material.dart';
 
@@ -14,14 +15,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Dog breeds',
+      title: breed,
       theme: ThemeData(
         primarySwatch: Colors.brown,
       ),
       home: const DogsSearchingPage(),
-      routes: {
-        '/query-list': (context) => QueryList(),
-      },
     );
   }
 }

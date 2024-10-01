@@ -127,27 +127,45 @@ class _EnterBreedState extends State<EnterBreed> {
               ),
             ),
           ),
-          if (_showSuggestions && _queries.isNotEmpty)
-            Container(
-              height: 250,
-              margin: const EdgeInsets.only(top: 8.0),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.5),
-                borderRadius: BorderRadius.circular(5.0),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 4,
-                    offset: Offset(0, 2),
-                  )
-                ],
-              ),
-                    child: SingleChildScrollView(
-                    child:  ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: _queries.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
+          Expanded(
+            child: Stack(
+              children: [
+                _isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : _imageUrl != null
+                        ? CachedNetworkImage(
+                            imageUrl: _imageUrl!,
+                            placeholder: (context, url) =>
+                                const CircularProgressIndicator(),
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                          )
+                        : const Center(child: Text(error2)),
+                if (_showSuggestions && _queries.isNotEmpty)
+                  Positioned(
+                    top: 0,
+                    bottom: 20,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      height: 200,
+                      margin: const EdgeInsets.only(top: 8.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(5.0),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 4,
+                            offset: Offset(0, 2),
+                          )
+                        ],
+                      ),
+
+                      child: ListView.builder(
+                        itemCount: _queries.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
                             title: Text(_queries[index].query),
                             onTap: () {
                               _controller.text = _queries[index].query;
@@ -155,26 +173,16 @@ class _EnterBreedState extends State<EnterBreed> {
                                 _showSuggestions = false;
                               });
                             },
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
-                 ),
+                  ),
+              ],
             ),
-
-          const SizedBox(height: 20),
-          _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : _imageUrl != null
-                  ? CachedNetworkImage(
-                      imageUrl: _imageUrl!,
-                      placeholder: (context, url) =>
-                          const CircularProgressIndicator(),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
-                    )
-                  : const Text(error2),
-      ]
-      )
+          ),
+        ],
+      ),
     );
   }
 

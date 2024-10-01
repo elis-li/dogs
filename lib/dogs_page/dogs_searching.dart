@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:sqflite/sqflite.dart';
 import '../data_base/dataBase.dart';
 
 class DogsSearchingPage extends StatelessWidget {
@@ -39,6 +40,7 @@ class _EnterBreedState extends State<EnterBreed> {
   bool _showSuggestions = false;
   String? _imageUrl;
   bool _isLoading = false;
+  late Database _db;
 
   @override
   void initState() {
@@ -58,11 +60,21 @@ class _EnterBreedState extends State<EnterBreed> {
     });
   }
 
+
   void _loadQueries() async {
+    _db = await DatabaseHelper.initializeDB();
     List<Map<String, dynamic>> queryMaps = await DatabaseHelper.getQueries();
     setState(() {
       _queries = queryMaps.map((map) => QueryBase.fromMap(map)).toList();
     });
+  }
+
+
+  Future<void> clearQueriesFromDB() async {
+      await DatabaseHelper.clearQueries();
+      setState(() {
+        _queries.clear();
+      });
   }
 
   void _saveQuery() async {
@@ -165,16 +177,29 @@ class _EnterBreedState extends State<EnterBreed> {
                       child: ListView.builder(
                         itemCount: _queries.length,
                         itemBuilder: (context, index) {
-                          return ListTile(
-                            title: Text(_queries[index].query),
-                            onTap: () {
-                              _controller.text = _queries[index].query;
-                              setState(() {
-                                _showSuggestions = false;
-                              });
-                            },
-                          );
-                        },
+                          if (index == 0) {
+                            return Padding(
+                              padding: const EdgeInsets.only(left: 250),
+
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  await clearQueriesFromDB();
+                                },
+                                child: const Text(listButton),
+                              ),
+                            );
+                          } else {
+                            return ListTile(
+                              title: Text(_queries[index].query),
+                              onTap: () {
+                                _controller.text = _queries[index].query;
+                                setState(() {
+                                  _showSuggestions = false;
+                                });
+                              },
+                            );
+                          }
+                        }
                       ),
                     ),
                   ),

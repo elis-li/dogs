@@ -35,7 +35,6 @@ class DatabaseHelper {
         );
       }
 
-
   static Future<void> insertQuery(String query) async {
     final db = await initializeDB();
     await db.insert(
@@ -48,6 +47,11 @@ class DatabaseHelper {
   static Future<List<Map<String, dynamic>>> getQueries() async{
     final db = await initializeDB();
     return db.query('queries');
+  }
+
+  static Future<void> clearQueries() async {
+    final db = await initializeDB();
+    await db.execute('DELETE FROM queries');
   }
 }
 

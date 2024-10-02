@@ -60,7 +60,6 @@ class _EnterBreedState extends State<EnterBreed> {
     });
   }
 
-
   void _loadQueries() async {
     _db = await DatabaseHelper.initializeDB();
     List<Map<String, dynamic>> queryMaps = await DatabaseHelper.getQueries();
@@ -69,12 +68,11 @@ class _EnterBreedState extends State<EnterBreed> {
     });
   }
 
-
   Future<void> clearQueriesFromDB() async {
-      await DatabaseHelper.clearQueries();
-      setState(() {
-        _queries.clear();
-      });
+    await DatabaseHelper.clearQueries();
+    setState(() {
+      _queries.clear();
+    });
   }
 
   void _saveQuery() async {
@@ -106,7 +104,7 @@ class _EnterBreedState extends State<EnterBreed> {
         _imageUrl = null;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(error1)),
+        const SnackBar(content: Text(errorBreedNotFound)),
       );
     }
   }
@@ -123,7 +121,7 @@ class _EnterBreedState extends State<EnterBreed> {
             focusNode: _focusNode,
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
-              hintText: enter,
+              hintText: enterTextHint,
               suffixIcon: IconButton(
                 onPressed: () {
                   _controller.clear();
@@ -152,7 +150,7 @@ class _EnterBreedState extends State<EnterBreed> {
                             errorWidget: (context, url, error) =>
                                 const Icon(Icons.error),
                           )
-                        : const Center(child: Text(error2)),
+                        : const Center(child: Text(errorImageNotFound)),
                 if (_showSuggestions && _queries.isNotEmpty)
                   Positioned(
                     top: 0,
@@ -173,36 +171,33 @@ class _EnterBreedState extends State<EnterBreed> {
                           )
                         ],
                       ),
-
                       child: ListView.builder(
-                        itemCount: _queries.length,
-                        itemBuilder: (context, index) {
-                          if (index == 0) {
-                            return Padding(
-                              padding: const EdgeInsets.only(left: 250),
-
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  await clearQueriesFromDB();
+                          itemCount: _queries.length,
+                          itemBuilder: (context, index) {
+                            if (index == 0) {
+                              return Padding(
+                                padding: const EdgeInsets.only(left: 250),
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    await clearQueriesFromDB();
+                                  },
+                                  child: const Text(deleteDB),
+                                ),
+                              );
+                            } else {
+                              return ListTile(
+                                title: Text(_queries[index].query),
+                                onTap: () {
+                                  _controller.text = _queries[index].query;
+                                  setState(() {
+                                    _showSuggestions = false;
+                                  });
                                 },
-                                child: const Text(listButton),
-                              ),
-                            );
-                          } else {
-                            return ListTile(
-                              title: Text(_queries[index].query),
-                              onTap: () {
-                                _controller.text = _queries[index].query;
-                                setState(() {
-                                  _showSuggestions = false;
-                                });
-                              },
-                            );
-                          }
-                        }
-                      ),
+                              );
+                            }
+                          }),
                     ),
-                  ),
+                  )
               ],
             ),
           ),

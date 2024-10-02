@@ -1,6 +1,7 @@
 const String search = 'Dog Breed Search';
-const String error1 = 'Breed is not found! Please try again.';
-const String enter = 'Enter a dog breed';
-const String error2 = 'No image found';
-const String breed = 'Dog breeds';
-const String listButton = 'delete all';
+const String errorBreedNotFound = 'Breed is not found! Please try again.';
+const String enterTextHint = 'Enter a dog breed';
+const String errorImageNotFound = 'No image found';
+const String breedsTitle = 'Dog breeds';
+const String deleteDB = 'delete all';
+

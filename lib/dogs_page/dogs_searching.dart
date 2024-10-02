@@ -152,39 +152,38 @@ class _EnterBreedState extends State<EnterBreed> {
                           )
                         : const Center(child: Text(errorImageNotFound)),
                 if (_showSuggestions && _queries.isNotEmpty)
-                  Positioned(
-                    top: 0,
-                    bottom: 20,
-                    left: 0,
-                    right: 0,
-                    child: Container(
-                      height: 200,
-                      margin: const EdgeInsets.only(top: 8.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(5.0),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 4,
-                            offset: Offset(0, 2),
-                          )
-                        ],
-                      ),
-                      child: ListView.builder(
-                          itemCount: _queries.length,
-                          itemBuilder: (context, index) {
-                            if (index == 0) {
-                              return Padding(
-                                padding: const EdgeInsets.only(left: 250),
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                    await clearQueriesFromDB();
-                                  },
-                                  child: const Text(deleteDB),
-                                ),
-                              );
-                            } else {
+                  Container(
+                    margin: const EdgeInsets.only(top: 8.0),
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(5.0),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
+                        )
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 250),
+                          child: TextButton(
+                            onPressed: () async {
+                              await clearQueriesFromDB();
+                              setState(() {
+                                _queries.clear();
+                              });
+                            },
+                            child: const Text(deleteDB),
+                          ),
+                        ),
+                        Flexible(
+                          child: ListView.builder(
+                            itemCount: _queries.length,
+                            itemBuilder: (context, index) {
                               return ListTile(
                                 title: Text(_queries[index].query),
                                 onTap: () {
@@ -194,10 +193,12 @@ class _EnterBreedState extends State<EnterBreed> {
                                   });
                                 },
                               );
-                            }
-                          }),
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  )
+                  ),
               ],
             ),
           ),

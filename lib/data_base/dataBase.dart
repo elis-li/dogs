@@ -35,18 +35,35 @@ class DatabaseHelper {
         );
       }
 
+  static Future<void> deletePreviousDuplicates(String query) async {
+    final db = await initializeDB();
+
+    await db.rawDelete('''
+      DELETE FROM queries
+      WHERE query = ? AND id NOT IN (
+        SELECT MAX (id)
+        FROM queries
+        WHERE query = ?
+      )
+      ''', [query, query]);
+
+  }
+
   static Future<void> insertQuery(String query) async {
     final db = await initializeDB();
     await db.insert(
       'queries',
       {'query': query},
-      conflictAlgorithm: ConflictAlgorithm.replace,
     );
+    await deletePreviousDuplicates(query);
   }
 
   static Future<List<Map<String, dynamic>>> getQueries() async{
     final db = await initializeDB();
-    return db.query('queries');
+    return db.query(
+        'queries',
+        orderBy: 'id DESC',
+    );
   }
 
   static Future<void> clearQueries() async {

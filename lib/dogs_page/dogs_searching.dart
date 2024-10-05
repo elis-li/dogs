@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dogs/design/texts.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -41,6 +43,7 @@ class _EnterBreedState extends State<EnterBreed> {
   String? _imageUrl;
   bool _isLoading = false;
   late Database _db;
+  bool _hasError = false;
 
   @override
   void initState() {
@@ -87,21 +90,45 @@ class _EnterBreedState extends State<EnterBreed> {
     setState(() {
       _isLoading = true;
       _imageUrl = null;
+      _hasError = false;
     });
 
-    final response = await http.get(
-      Uri.parse('https://dog.ceo/api/breed/$breed/images/random'),
-    );
+    Timer(Duration(seconds: 15), () {
+      if (_isLoading) {
+        setState(() {
+          _isLoading = false;
+          _hasError = true;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text(errorImageNotFound)),
+        );
+      }
+    });
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
+    try {
+      final response = await http.get(
+        Uri.parse('https://dog.ceo/api/breed/$breed/images/random'),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          _imageUrl = data['message'];
+          _isLoading = false;
+        });
+      } else {
+        setState(() {
+          _hasError = true;
+          _isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text(errorBreedNotFound)),
+        );
+      }
+    } catch (e) {
       setState(() {
-        _imageUrl = data['message'];
+        _hasError = true;
         _isLoading = false;
-      });
-    } else {
-      setState(() {
-        _imageUrl = null;
       });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text(errorBreedNotFound)),

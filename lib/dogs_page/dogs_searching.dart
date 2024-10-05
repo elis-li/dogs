@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:dogs/design/texts.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;

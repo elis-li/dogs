@@ -78,7 +78,7 @@ class _EnterBreedState extends State<EnterBreed> {
   }
 
   void _saveQuery() async {
-    String queryText = _controller.text;
+    String queryText = _controller.text.toLowerCase().trim();
     if (queryText.isNotEmpty) {
       await DatabaseHelper.insertQuery(queryText);
       _loadQueries();
@@ -156,7 +156,7 @@ class _EnterBreedState extends State<EnterBreed> {
               ),
               prefixIcon: IconButton(
                 onPressed: () {
-                  fetchImage(_controller.text.toLowerCase());
+                  fetchImage(_controller.text.toLowerCase().trim());
                   _saveQuery();
                 },
                 icon: const Icon(Icons.search),

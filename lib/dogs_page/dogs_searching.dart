@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:dogs/design/texts.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -41,6 +42,7 @@ class _EnterBreedState extends State<EnterBreed> {
   String? _imageUrl;
   bool _isLoading = false;
   late Database _db;
+  bool _isError = false;
 
   @override
   void initState() {
@@ -76,7 +78,7 @@ class _EnterBreedState extends State<EnterBreed> {
   }
 
   void _saveQuery() async {
-    String queryText = _controller.text;
+    String queryText = _controller.text.toLowerCase().trim();
     if (queryText.isNotEmpty) {
       await DatabaseHelper.insertQuery(queryText);
       _loadQueries();
@@ -87,21 +89,45 @@ class _EnterBreedState extends State<EnterBreed> {
     setState(() {
       _isLoading = true;
       _imageUrl = null;
+      _isError = false;
     });
 
-    final response = await http.get(
-      Uri.parse('https://dog.ceo/api/breed/$breed/images/random'),
-    );
+    Timer(Duration(seconds: timeForRequest), () {
+      if (_isLoading) {
+        setState(() {
+          _isLoading = false;
+          _isError = true;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text(errorImageNotFound)),
+        );
+      }
+    });
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
+    try {
+      final response = await http.get(
+        Uri.parse(baseUrl+'breed/$breed/images/random'),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          _imageUrl = data['message'];
+          _isLoading = false;
+        });
+      } else {
+        setState(() {
+          _isError = true;
+          _isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text(errorBreedNotFound)),
+        );
+      }
+    } catch (e) {
       setState(() {
-        _imageUrl = data['message'];
+        _isError = true;
         _isLoading = false;
-      });
-    } else {
-      setState(() {
-        _imageUrl = null;
       });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text(errorBreedNotFound)),
@@ -130,7 +156,7 @@ class _EnterBreedState extends State<EnterBreed> {
               ),
               prefixIcon: IconButton(
                 onPressed: () {
-                  fetchImage(_controller.text.toLowerCase());
+                  fetchImage(_controller.text.toLowerCase().trim());
                   _saveQuery();
                 },
                 icon: const Icon(Icons.search),

@@ -5,3 +5,10 @@ const String errorImageNotFound = 'No image found';
 const String breedsTitle = 'Dog breeds';
 const String deleteDB = 'delete all';
 
+//Time:
+
+const int timeForRequest = 15;
+
+//URL:
+
+const String baseUrl = 'https://dog.ceo/api/' ;

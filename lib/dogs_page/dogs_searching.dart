@@ -42,7 +42,7 @@ class _EnterBreedState extends State<EnterBreed> {
   String? _imageUrl;
   bool _isLoading = false;
   late Database _db;
-  bool _hasError = false;
+  bool _isError = false;
 
   @override
   void initState() {
@@ -89,14 +89,14 @@ class _EnterBreedState extends State<EnterBreed> {
     setState(() {
       _isLoading = true;
       _imageUrl = null;
-      _hasError = false;
+      _isError = false;
     });
 
-    Timer(Duration(seconds: 15), () {
+    Timer(Duration(seconds: timeForRequest), () {
       if (_isLoading) {
         setState(() {
           _isLoading = false;
-          _hasError = true;
+          _isError = true;
         });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text(errorImageNotFound)),
@@ -106,7 +106,7 @@ class _EnterBreedState extends State<EnterBreed> {
 
     try {
       final response = await http.get(
-        Uri.parse('https://dog.ceo/api/breed/$breed/images/random'),
+        Uri.parse(baseUrl+'breed/$breed/images/random'),
       );
 
       if (response.statusCode == 200) {
@@ -117,7 +117,7 @@ class _EnterBreedState extends State<EnterBreed> {
         });
       } else {
         setState(() {
-          _hasError = true;
+          _isError = true;
           _isLoading = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
@@ -126,7 +126,7 @@ class _EnterBreedState extends State<EnterBreed> {
       }
     } catch (e) {
       setState(() {
-        _hasError = true;
+        _isError = true;
         _isLoading = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
